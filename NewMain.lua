@@ -5,7 +5,7 @@ until game:IsLoaded() and game:GetService("Players").LocalPlayer.Character
 local executiontime = tick()
 if not writefile or not readfile or not isfile or not isfolder then game.Players.LocalPlayer:Kick("you have a really shity executor"); while true do end; return end;
 if printconsole then function print(v) printconsole(v, 0, 255, 255)end end
-local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/valkryant/vendettaOwnCheck/main/NewLib.lua"))()
+local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/valkryant/vendettaOwnCheck/main/NewMain.lua"))()
 local NotifyLibrary = loadstring(game:HttpGet("https://raw.githubusercontent.com/valkryant/vendettaOwnCheck/main/NotificationLibrary.lua"))()
 local sdfh__jidsfe3 = loadstring(game:HttpGet("https://raw.githubusercontent.com/valkryant/vendettaOwnCheck/main/data.lua"))()
 local Notify = NotifyLibrary.Notify
