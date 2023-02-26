@@ -2,13 +2,6 @@ repeat
 	wait(0.2)
 until game:IsLoaded() and game:GetService("Players").LocalPlayer.Character
 
-
-
-game.StarterGui:SetCore( "ChatMakeSystemMessage",  { Text = "[vendetta] - Loading variables...", Color = Color3.fromRGB( 255, 255, 0), Font = Enum.Font.Arial, FontSize = Enum.FontSize.Size24 } )
-local plr = game.Players.LocalPlayer
-local blacklist = {}
-local chat = game:GetService("Chat")
-local httpService = game:GetService("HttpService")
 local executiontime = tick()
 if not writefile or not readfile or not isfile or not isfolder then game.Players.LocalPlayer:Kick("you have a really shity executor"); while true do end; return end;
 if printconsole then function print(v) printconsole(v, 0, 255, 255)end end
@@ -19,212 +12,6 @@ local Notify = NotifyLibrary.Notify
 Libraryflags = Library.flags
 
 local ScriptVersion = "2.82"
-
-
-game.StarterGui:SetCore( "ChatMakeSystemMessage",  { Text = "[vendetta] - Loading functions...", Color = Color3.fromRGB( 255, 255, 0), Font = Enum.Font.Arial, FontSize = Enum.FontSize.Size24 } )
-
-local function isBlacklisted(username)
-    for i, v in ipairs(blacklist) do
-        if v == username then
-            return true
-        end
-    end
-    return false
-end
-
-local function addToBlacklist(username)
-    local playr = game.Players:FindFirstChild(username)
-    if playr then
-        local userId = playr.UserId
-        local displayName = playr.DisplayName
-        local newEntry = {
-            username = username,
-            displayName = displayName,
-            userId = userId
-        }
-        if not isBlacklisted(username) then
-            table.insert(blacklist, username)
-            print(username .. " (@" .. displayName .. ", UserId: " .. userId .. ") has been added to the blacklist.")
-        else
-            print(username .. " (@" .. displayName .. ") is already blacklisted.")
-        end
-    else
-        print("Player " .. username .. " not found.")
-    end
-end
-
-local function removeFromBlacklist(username)
-    for i, v in ipairs(blacklist) do
-        if v == username then
-            table.remove(blacklist, i)
-            print(username .. " has been removed from the blacklist.")
-            return
-        end
-    end
-    print(username .. " is not blacklisted.")
-end
-
-local function setWalkspeed(speed)
-    if speed == "default" then
-        plr.Character.Humanoid.WalkSpeed = 16
-    else
-        while speed ~= "default" do
-            plr.Character.Humanoid.WalkSpeed = tonumber(speed)
-            print("Walkspeed set to " .. speed)
-        end
-    end
-end
-
-
-
-game.StarterGui:SetCore( "ChatMakeSystemMessage",  { Text = "[vendetta] - Loaded!", Color = Color3.fromRGB( 255, 255, 0), Font = Enum.Font.Arial, FontSize = Enum.FontSize.Size24 } )
-
-game.StarterGui:SetCore( "ChatMakeSystemMessage",  { Text = "'/cmds' to view all commands.", Color = Color3.fromRGB( 255, 255, 255), Font = Enum.Font.Arial, FontSize = Enum.FontSize.Size24 } )
-
-game.Players.LocalPlayer.Chatted:Connect(function(msg)
-    if msg == "/rejoin" then
-        local PID = game.placeId
-        local plr = game.Players.LocalPlayer
-        game:GetService("TeleportService"):Teleport(PID, plr)
-    end
-end)
-
-    game.Players.LocalPlayer.Chatted:Connect(function(msg)
-    if msg == "/r" then
-        local PID = game.placeId
-        local plr = game.Players.LocalPlayer
-        game:GetService("TeleportService"):Teleport(PID, plr)
-    end
-end)
- 
-
-plr.Chatted:Connect(function(msg)
-    if string.sub(msg, 1, 10) == "/teleport " then
-        local playerUsername = string.sub(msg, 11)
-        local plrTP = game.Players:FindFirstChild(playerUsername)
-        if plrTP then
-            plr.Character.HumanoidRootPart.CFrame = plrTP.Character.HumanoidRootPart.CFrame * CFrame.new(0,2,0)
-        else
-            print("Player not found")
-        end
-    end
-end)
-
-
-
-plr.Chatted:Connect(function(msg)
-    if string.sub(msg, 1, 4) == "/tp " then
-        local playerUsername = string.sub(msg, 5)
-        local plrTP = game.Players:FindFirstChild(playerUsername)
-        if plrTP then
-            plr.Character.HumanoidRootPart.CFrame = plrTP.Character.HumanoidRootPart.CFrame * CFrame.new(0,2,0)
-        else
-            print("Player not found")
-        end
-    end
-end)
-
-plr.Chatted:Connect(function(msg)
-    if string.sub(msg, 1, 14) == "/addblacklist " then
-        local usernameToBlacklist = string.sub(msg, 15)
-        addToBlacklist(usernameToBlacklist)
-        game.StarterGui:SetCore( "ChatMakeSystemMessage",  { Text = " " .. usernameToBlacklist .. " has been blacklisted from vendetta.", Color = Color3.fromRGB( 255, 0, 0), Font = Enum.Font.Arial, FontSize = Enum.FontSize.Size24 } )
-    end
-end)
-
-plr.Chatted:Connect(function(msg)
-    if string.sub(msg, 1, 7) == "/addbl " then
-        local usernameToBlacklist = string.sub(msg, 8)
-        addToBlacklist(usernameToBlacklist)
-        game.StarterGui:SetCore( "ChatMakeSystemMessage",  { Text = " " .. usernameToBlacklist .. " has been blacklisted from vendetta.", Color = Color3.fromRGB( 255, 0, 0), Font = Enum.Font.Arial, FontSize = Enum.FontSize.Size24 } )
-    end
-end)
-
-game.Players.LocalPlayer.Chatted:Connect(function(msg)
-if msg == "/blacklist" then
-    if #blacklist > 0 then
-        for i, v in ipairs(blacklist) do
-            game.StarterGui:SetCore( "ChatMakeSystemMessage",  { Text = v, Color = Color3.fromRGB( 255, 0, 0), Font = Enum.Font.Arial, FontSize = Enum.FontSize.Size24 } )
-        end
-    else
-        game.StarterGui:SetCore( "ChatMakeSystemMessage",  { Text = "[vendetta] - The blacklist is empty, add someone onto the blacklist by using the '/blacklist' command.", Color = Color3.fromRGB( 255, 255, 0), Font = Enum.Font.Arial, FontSize = Enum.FontSize.Size24 } )
-    end
-end
-end)
-
-game.Players.LocalPlayer.Chatted:Connect(function(msg)
-if msg == "/bl" then
-    if #blacklist > 0 then
-        for i, v in ipairs(blacklist) do
-            game.StarterGui:SetCore( "ChatMakeSystemMessage",  { Text = v, Color = Color3.fromRGB( 255, 0, 0), Font = Enum.Font.Arial, FontSize = Enum.FontSize.Size24 } )
-        end
-    else
-        game.StarterGui:SetCore( "ChatMakeSystemMessage",  { Text = "[vendetta] - The blacklist is empty, add someone onto the blacklist by using the '/blacklist' command.", Color = Color3.fromRGB( 255, 255, 0), Font = Enum.Font.Arial, FontSize = Enum.FontSize.Size24 } )
-    end
-end
-end)
-
-plr.Chatted:Connect(function(msg)
-    if string.sub(msg, 1, 13) == "/unblacklist " then
-        local usernameToRemove = string.sub(msg, 14)
-        removeFromBlacklist(usernameToRemove)
-        game.StarterGui:SetCore( "ChatMakeSystemMessage",  { Text = "[vendetta] - Removed ".. usernameToRemove .. "'s blacklisted status.", Color = Color3.fromRGB( 255, 155, 0), Font = Enum.Font.Arial, FontSize = Enum.FontSize.Size24 } )
-    end
-end)
-
-
-plr.Chatted:Connect(function(msg)
-    if string.sub(msg, 1, 6) == "/unbl " then
-        local usernameToRemove = string.sub(msg, 7)
-        removeFromBlacklist(usernameToRemove)
-        game.StarterGui:SetCore( "ChatMakeSystemMessage",  { Text = "[vendetta] - Removed ".. usernameToRemove .. "'s blacklisted status.", Color = Color3.fromRGB( 255, 155, 0), Font = Enum.Font.Arial, FontSize = Enum.FontSize.Size24 } )
-    end
-end)
-
-plr.Chatted:Connect(function(msg)
-    if string.sub(msg, 1, 7) == "/speed " then
-        local speed = string.sub(msg, 8)
-        setWalkspeed(speed)
-    end
-end)
-
-game.Players.LocalPlayer.Chatted:Connect(function(msg)
-    if msg == "/reset" then
-        local character = game.Players.LocalPlayer.Character
-        if character then
-            local head = character:FindFirstChild("Head")
-            if head then
-                head:Destroy()
-            end
-        end
-    end
-end)
-
-game.Players.LocalPlayer.Chatted:Connect(function(msg)
-    if msg == "/cmds" then
-        game.StarterGui:SetCore( "ChatMakeSystemMessage",  { Text = "[vendetta] - Commands Help", Color = Color3.fromRGB( 255, 155, 0), Font = Enum.Font.Arial, FontSize = Enum.FontSize.Size24 } )
-        game.StarterGui:SetCore( "ChatMakeSystemMessage",  { Text = "--------------------------", Color = Color3.fromRGB( 255, 155, 0), Font = Enum.Font.Arial, FontSize = Enum.FontSize.Size24 } )
-        game.StarterGui:SetCore( "ChatMakeSystemMessage",  { Text = "Teleports //", Color = Color3.fromRGB( 255, 255, 0), Font = Enum.Font.Arial, FontSize = Enum.FontSize.Size24 } )
-        game.StarterGui:SetCore( "ChatMakeSystemMessage",  { Text = "/teleport (username) - Teleports you the input player.", Color = Color3.fromRGB( 255, 155, 0), Font = Enum.Font.Arial, FontSize = Enum.FontSize.Size24 } )
-        game.StarterGui:SetCore( "ChatMakeSystemMessage",  { Text = "/tp (username) - Teleports you the input player.", Color = Color3.fromRGB( 255, 155, 0), Font = Enum.Font.Arial, FontSize = Enum.FontSize.Size24 } )
-        game.StarterGui:SetCore( "ChatMakeSystemMessage",  { Text = "Misc //", Color = Color3.fromRGB( 255, 255, 0), Font = Enum.Font.Arial, FontSize = Enum.FontSize.Size24 } )
-        game.StarterGui:SetCore( "ChatMakeSystemMessage",  { Text = "/reset - Kills you instantly, even if you are in combat.", Color = Color3.fromRGB( 255, 155, 0), Font = Enum.Font.Arial, FontSize = Enum.FontSize.Size24 } )
-        game.StarterGui:SetCore( "ChatMakeSystemMessage",  { Text = "/rejoin - Rejoins the server that you are currently on.", Color = Color3.fromRGB( 255, 155, 0), Font = Enum.Font.Arial, FontSize = Enum.FontSize.Size24 } )
-        game.StarterGui:SetCore( "ChatMakeSystemMessage",  { Text = "/r - Rejoins the server that you are currently on.", Color = Color3.fromRGB( 255, 155, 0), Font = Enum.Font.Arial, FontSize = Enum.FontSize.Size24 } )
-        game.StarterGui:SetCore( "ChatMakeSystemMessage",  { Text = "/speed (value) - Alters your WalkSpeed to the input value.", Color = Color3.fromRGB( 255, 155, 0), Font = Enum.Font.Arial, FontSize = Enum.FontSize.Size24 } )
-        game.StarterGui:SetCore( "ChatMakeSystemMessage",  { Text = "* NOTE: Inputting the 'value' to 'default' will reset the WalkSpeed back to normal.", Color = Color3.fromRGB( 255, 155, 0), Font = Enum.Font.Arial, FontSize = Enum.FontSize.Size24 } )
-        game.StarterGui:SetCore( "ChatMakeSystemMessage",  { Text = "Moderation //", Color = Color3.fromRGB( 255, 255, 0), Font = Enum.Font.Arial, FontSize = Enum.FontSize.Size24 } )
-        game.StarterGui:SetCore( "ChatMakeSystemMessage",  { Text = "/addblacklist (username) - Blacklists the input user from using the script.", Color = Color3.fromRGB( 255, 155, 0), Font = Enum.Font.Arial, FontSize = Enum.FontSize.Size24 } )
-        game.StarterGui:SetCore( "ChatMakeSystemMessage",  { Text = "/addbl (username) - Blacklists the input user from using the script.", Color = Color3.fromRGB( 255, 155, 0), Font = Enum.Font.Arial, FontSize = Enum.FontSize.Size24 } )
-        game.StarterGui:SetCore( "ChatMakeSystemMessage",  { Text = "/unblacklist (username) - Removes the input user's blacklisted status.", Color = Color3.fromRGB( 255, 155, 0), Font = Enum.Font.Arial, FontSize = Enum.FontSize.Size24 } )
-        game.StarterGui:SetCore( "ChatMakeSystemMessage",  { Text = "/unbl (username) - Removes the input user's blacklisted status.", Color = Color3.fromRGB( 255, 155, 0), Font = Enum.Font.Arial, FontSize = Enum.FontSize.Size24 } )
-        game.StarterGui:SetCore( "ChatMakeSystemMessage",  { Text = "/blacklist - Prints out (in chat) the list of blacklisted players.", Color = Color3.fromRGB( 255, 155, 0), Font = Enum.Font.Arial, FontSize = Enum.FontSize.Size24 } )
-        game.StarterGui:SetCore( "ChatMakeSystemMessage",  { Text = "/bl - Prints out (in chat) the list of blacklisted players.", Color = Color3.fromRGB( 255, 155, 0), Font = Enum.Font.Arial, FontSize = Enum.FontSize.Size24 } )
-    end
-end)
-
-
-
 
 speaker = game:GetService("Players").LocalPlayer
 Mouse = speaker:GetMouse()
@@ -330,7 +117,7 @@ CreditsTab = Window:CreateTab({
 
 
 --[[ EBG TAB ]]
-local EBGSection = EBGTab:CreateSection({
+local EBGSection = PepsisWorld:CreateSection({
     Name = "[EBG]",
     Side = "Bottom",
 })
@@ -453,20 +240,6 @@ UltimateSection:AddDropdown({
         "Option 1"
     },
 })
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 Player0 = PlayerTab:CreateSection({
@@ -4127,7 +3900,7 @@ function clear_custom_skybox()
 		v.Name == "SPACE_SKYBOX_BACLK_OUT" or
 		v.Name == "NIGULA_OUT" or
 		v.Name == "NIGULA2_OUT" or
-		v.Name == "STORMMY_OUT" then
+		v.Name == "STORMMY_OUT" or
 			v:Destroy()
 		end
 	end
@@ -5610,8 +5383,7 @@ function tweenMode2()
     )
     tween:Play()
 	workspace.Gravity = 196.2
-end 
-
+end vencc
 function tweenMode3()
 	workspace.Gravity = 0
     tweenService, tweenInfo = game:GetService("TweenService"), TweenInfo.new(wayPointTables.TweenDelay, Enum.EasingStyle.Linear)
@@ -6869,9 +6641,7 @@ dev1 = Credits1:CreateLabel({
 
 Scripter1 = Credits2:CreateLabel({
 	Text = 'Exunys	 | Aimbot'
-})
-Scripter3 = Credits2:CreateLabel({
-	Text = 'valk	 | Third Person Aimbot'
+    Text = 'valk	 | Third Person Aimbot'
 })
 Scripter2 = Credits2:CreateLabel({
 	Text = 'zurewrath | Old CFrame Speed'
