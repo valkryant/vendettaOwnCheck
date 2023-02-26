@@ -2,16 +2,229 @@ repeat
 	wait(0.2)
 until game:IsLoaded() and game:GetService("Players").LocalPlayer.Character
 
+
+
+game.StarterGui:SetCore( "ChatMakeSystemMessage",  { Text = "[vendetta] - Loading variables...", Color = Color3.fromRGB( 255, 255, 0), Font = Enum.Font.Arial, FontSize = Enum.FontSize.Size24 } )
+local plr = game.Players.LocalPlayer
+local blacklist = {}
+local chat = game:GetService("Chat")
+local httpService = game:GetService("HttpService")
 local executiontime = tick()
 if not writefile or not readfile or not isfile or not isfolder then game.Players.LocalPlayer:Kick("you have a really shity executor"); while true do end; return end;
 if printconsole then function print(v) printconsole(v, 0, 255, 255)end end
-local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/Iratethisname10/Iy-plus/main/repo/NewLib.lua"))()
-local NotifyLibrary = loadstring(game:HttpGet("https://raw.githubusercontent.com/Iratethisname10/Iy-plus/main/NotificationLibrary.lua"))()
-local sdfh__jidsfe3 = loadstring(game:HttpGet("https://raw.githubusercontent.com/Iratethisname10/Iy-plus/main/others/files/data.lua"))()
+local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/valkryant/vendettaOwnCheck/main/NewLib.lua"))()
+local NotifyLibrary = loadstring(game:HttpGet("https://raw.githubusercontent.com/valkryant/vendettaOwnCheck/main/NotificationLibrary.lua"))()
+local sdfh__jidsfe3 = loadstring(game:HttpGet("https://raw.githubusercontent.com/valkryant/vendettaOwnCheck/main/data.lua"))()
 local Notify = NotifyLibrary.Notify
 Libraryflags = Library.flags
 
 local ScriptVersion = "2.82"
+
+
+game.StarterGui:SetCore( "ChatMakeSystemMessage",  { Text = "[vendetta] - Loading functions...", Color = Color3.fromRGB( 255, 255, 0), Font = Enum.Font.Arial, FontSize = Enum.FontSize.Size24 } )
+
+local function isBlacklisted(username)
+    for i, v in ipairs(blacklist) do
+        if v == username then
+            return true
+        end
+    end
+    return false
+end
+
+local function addToBlacklist(username)
+    local playr = game.Players:FindFirstChild(username)
+    if playr then
+        local userId = playr.UserId
+        local displayName = playr.DisplayName
+        local newEntry = {
+            username = username,
+            displayName = displayName,
+            userId = userId
+        }
+        if not isBlacklisted(username) then
+            table.insert(blacklist, username)
+            print(username .. " (@" .. displayName .. ", UserId: " .. userId .. ") has been added to the blacklist.")
+        else
+            print(username .. " (@" .. displayName .. ") is already blacklisted.")
+        end
+    else
+        print("Player " .. username .. " not found.")
+    end
+end
+
+local function removeFromBlacklist(username)
+    for i, v in ipairs(blacklist) do
+        if v == username then
+            table.remove(blacklist, i)
+            print(username .. " has been removed from the blacklist.")
+            return
+        end
+    end
+    print(username .. " is not blacklisted.")
+end
+
+local function setWalkspeed(speed)
+    if speed == "default" then
+        plr.Character.Humanoid.WalkSpeed = 16
+    else
+        while speed ~= "default" do
+            plr.Character.Humanoid.WalkSpeed = tonumber(speed)
+            print("Walkspeed set to " .. speed)
+        end
+    end
+end
+
+
+
+game.StarterGui:SetCore( "ChatMakeSystemMessage",  { Text = "[vendetta] - Loaded!", Color = Color3.fromRGB( 255, 255, 0), Font = Enum.Font.Arial, FontSize = Enum.FontSize.Size24 } )
+
+game.StarterGui:SetCore( "ChatMakeSystemMessage",  { Text = "'/cmds' to view all commands.", Color = Color3.fromRGB( 255, 255, 255), Font = Enum.Font.Arial, FontSize = Enum.FontSize.Size24 } )
+
+game.Players.LocalPlayer.Chatted:Connect(function(msg)
+    if msg == "/rejoin" then
+        local PID = game.placeId
+        local plr = game.Players.LocalPlayer
+        game:GetService("TeleportService"):Teleport(PID, plr)
+    end
+end)
+
+    game.Players.LocalPlayer.Chatted:Connect(function(msg)
+    if msg == "/r" then
+        local PID = game.placeId
+        local plr = game.Players.LocalPlayer
+        game:GetService("TeleportService"):Teleport(PID, plr)
+    end
+end)
+ 
+
+plr.Chatted:Connect(function(msg)
+    if string.sub(msg, 1, 10) == "/teleport " then
+        local playerUsername = string.sub(msg, 11)
+        local plrTP = game.Players:FindFirstChild(playerUsername)
+        if plrTP then
+            plr.Character.HumanoidRootPart.CFrame = plrTP.Character.HumanoidRootPart.CFrame * CFrame.new(0,2,0)
+        else
+            print("Player not found")
+        end
+    end
+end)
+
+
+
+plr.Chatted:Connect(function(msg)
+    if string.sub(msg, 1, 4) == "/tp " then
+        local playerUsername = string.sub(msg, 5)
+        local plrTP = game.Players:FindFirstChild(playerUsername)
+        if plrTP then
+            plr.Character.HumanoidRootPart.CFrame = plrTP.Character.HumanoidRootPart.CFrame * CFrame.new(0,2,0)
+        else
+            print("Player not found")
+        end
+    end
+end)
+
+plr.Chatted:Connect(function(msg)
+    if string.sub(msg, 1, 14) == "/addblacklist " then
+        local usernameToBlacklist = string.sub(msg, 15)
+        addToBlacklist(usernameToBlacklist)
+        game.StarterGui:SetCore( "ChatMakeSystemMessage",  { Text = " " .. usernameToBlacklist .. " has been blacklisted from vendetta.", Color = Color3.fromRGB( 255, 0, 0), Font = Enum.Font.Arial, FontSize = Enum.FontSize.Size24 } )
+    end
+end)
+
+plr.Chatted:Connect(function(msg)
+    if string.sub(msg, 1, 7) == "/addbl " then
+        local usernameToBlacklist = string.sub(msg, 8)
+        addToBlacklist(usernameToBlacklist)
+        game.StarterGui:SetCore( "ChatMakeSystemMessage",  { Text = " " .. usernameToBlacklist .. " has been blacklisted from vendetta.", Color = Color3.fromRGB( 255, 0, 0), Font = Enum.Font.Arial, FontSize = Enum.FontSize.Size24 } )
+    end
+end)
+
+game.Players.LocalPlayer.Chatted:Connect(function(msg)
+if msg == "/blacklist" then
+    if #blacklist > 0 then
+        for i, v in ipairs(blacklist) do
+            game.StarterGui:SetCore( "ChatMakeSystemMessage",  { Text = v, Color = Color3.fromRGB( 255, 0, 0), Font = Enum.Font.Arial, FontSize = Enum.FontSize.Size24 } )
+        end
+    else
+        game.StarterGui:SetCore( "ChatMakeSystemMessage",  { Text = "[vendetta] - The blacklist is empty, add someone onto the blacklist by using the '/blacklist' command.", Color = Color3.fromRGB( 255, 255, 0), Font = Enum.Font.Arial, FontSize = Enum.FontSize.Size24 } )
+    end
+end
+end)
+
+game.Players.LocalPlayer.Chatted:Connect(function(msg)
+if msg == "/bl" then
+    if #blacklist > 0 then
+        for i, v in ipairs(blacklist) do
+            game.StarterGui:SetCore( "ChatMakeSystemMessage",  { Text = v, Color = Color3.fromRGB( 255, 0, 0), Font = Enum.Font.Arial, FontSize = Enum.FontSize.Size24 } )
+        end
+    else
+        game.StarterGui:SetCore( "ChatMakeSystemMessage",  { Text = "[vendetta] - The blacklist is empty, add someone onto the blacklist by using the '/blacklist' command.", Color = Color3.fromRGB( 255, 255, 0), Font = Enum.Font.Arial, FontSize = Enum.FontSize.Size24 } )
+    end
+end
+end)
+
+plr.Chatted:Connect(function(msg)
+    if string.sub(msg, 1, 13) == "/unblacklist " then
+        local usernameToRemove = string.sub(msg, 14)
+        removeFromBlacklist(usernameToRemove)
+        game.StarterGui:SetCore( "ChatMakeSystemMessage",  { Text = "[vendetta] - Removed ".. usernameToRemove .. "'s blacklisted status.", Color = Color3.fromRGB( 255, 155, 0), Font = Enum.Font.Arial, FontSize = Enum.FontSize.Size24 } )
+    end
+end)
+
+
+plr.Chatted:Connect(function(msg)
+    if string.sub(msg, 1, 6) == "/unbl " then
+        local usernameToRemove = string.sub(msg, 7)
+        removeFromBlacklist(usernameToRemove)
+        game.StarterGui:SetCore( "ChatMakeSystemMessage",  { Text = "[vendetta] - Removed ".. usernameToRemove .. "'s blacklisted status.", Color = Color3.fromRGB( 255, 155, 0), Font = Enum.Font.Arial, FontSize = Enum.FontSize.Size24 } )
+    end
+end)
+
+plr.Chatted:Connect(function(msg)
+    if string.sub(msg, 1, 7) == "/speed " then
+        local speed = string.sub(msg, 8)
+        setWalkspeed(speed)
+    end
+end)
+
+game.Players.LocalPlayer.Chatted:Connect(function(msg)
+    if msg == "/reset" then
+        local character = game.Players.LocalPlayer.Character
+        if character then
+            local head = character:FindFirstChild("Head")
+            if head then
+                head:Destroy()
+            end
+        end
+    end
+end)
+
+game.Players.LocalPlayer.Chatted:Connect(function(msg)
+    if msg == "/cmds" then
+        game.StarterGui:SetCore( "ChatMakeSystemMessage",  { Text = "[vendetta] - Commands Help", Color = Color3.fromRGB( 255, 155, 0), Font = Enum.Font.Arial, FontSize = Enum.FontSize.Size24 } )
+        game.StarterGui:SetCore( "ChatMakeSystemMessage",  { Text = "--------------------------", Color = Color3.fromRGB( 255, 155, 0), Font = Enum.Font.Arial, FontSize = Enum.FontSize.Size24 } )
+        game.StarterGui:SetCore( "ChatMakeSystemMessage",  { Text = "Teleports //", Color = Color3.fromRGB( 255, 255, 0), Font = Enum.Font.Arial, FontSize = Enum.FontSize.Size24 } )
+        game.StarterGui:SetCore( "ChatMakeSystemMessage",  { Text = "/teleport (username) - Teleports you the input player.", Color = Color3.fromRGB( 255, 155, 0), Font = Enum.Font.Arial, FontSize = Enum.FontSize.Size24 } )
+        game.StarterGui:SetCore( "ChatMakeSystemMessage",  { Text = "/tp (username) - Teleports you the input player.", Color = Color3.fromRGB( 255, 155, 0), Font = Enum.Font.Arial, FontSize = Enum.FontSize.Size24 } )
+        game.StarterGui:SetCore( "ChatMakeSystemMessage",  { Text = "Misc //", Color = Color3.fromRGB( 255, 255, 0), Font = Enum.Font.Arial, FontSize = Enum.FontSize.Size24 } )
+        game.StarterGui:SetCore( "ChatMakeSystemMessage",  { Text = "/reset - Kills you instantly, even if you are in combat.", Color = Color3.fromRGB( 255, 155, 0), Font = Enum.Font.Arial, FontSize = Enum.FontSize.Size24 } )
+        game.StarterGui:SetCore( "ChatMakeSystemMessage",  { Text = "/rejoin - Rejoins the server that you are currently on.", Color = Color3.fromRGB( 255, 155, 0), Font = Enum.Font.Arial, FontSize = Enum.FontSize.Size24 } )
+        game.StarterGui:SetCore( "ChatMakeSystemMessage",  { Text = "/r - Rejoins the server that you are currently on.", Color = Color3.fromRGB( 255, 155, 0), Font = Enum.Font.Arial, FontSize = Enum.FontSize.Size24 } )
+        game.StarterGui:SetCore( "ChatMakeSystemMessage",  { Text = "/speed (value) - Alters your WalkSpeed to the input value.", Color = Color3.fromRGB( 255, 155, 0), Font = Enum.Font.Arial, FontSize = Enum.FontSize.Size24 } )
+        game.StarterGui:SetCore( "ChatMakeSystemMessage",  { Text = "* NOTE: Inputting the 'value' to 'default' will reset the WalkSpeed back to normal.", Color = Color3.fromRGB( 255, 155, 0), Font = Enum.Font.Arial, FontSize = Enum.FontSize.Size24 } )
+        game.StarterGui:SetCore( "ChatMakeSystemMessage",  { Text = "Moderation //", Color = Color3.fromRGB( 255, 255, 0), Font = Enum.Font.Arial, FontSize = Enum.FontSize.Size24 } )
+        game.StarterGui:SetCore( "ChatMakeSystemMessage",  { Text = "/addblacklist (username) - Blacklists the input user from using the script.", Color = Color3.fromRGB( 255, 155, 0), Font = Enum.Font.Arial, FontSize = Enum.FontSize.Size24 } )
+        game.StarterGui:SetCore( "ChatMakeSystemMessage",  { Text = "/addbl (username) - Blacklists the input user from using the script.", Color = Color3.fromRGB( 255, 155, 0), Font = Enum.Font.Arial, FontSize = Enum.FontSize.Size24 } )
+        game.StarterGui:SetCore( "ChatMakeSystemMessage",  { Text = "/unblacklist (username) - Removes the input user's blacklisted status.", Color = Color3.fromRGB( 255, 155, 0), Font = Enum.Font.Arial, FontSize = Enum.FontSize.Size24 } )
+        game.StarterGui:SetCore( "ChatMakeSystemMessage",  { Text = "/unbl (username) - Removes the input user's blacklisted status.", Color = Color3.fromRGB( 255, 155, 0), Font = Enum.Font.Arial, FontSize = Enum.FontSize.Size24 } )
+        game.StarterGui:SetCore( "ChatMakeSystemMessage",  { Text = "/blacklist - Prints out (in chat) the list of blacklisted players.", Color = Color3.fromRGB( 255, 155, 0), Font = Enum.Font.Arial, FontSize = Enum.FontSize.Size24 } )
+        game.StarterGui:SetCore( "ChatMakeSystemMessage",  { Text = "/bl - Prints out (in chat) the list of blacklisted players.", Color = Color3.fromRGB( 255, 155, 0), Font = Enum.Font.Arial, FontSize = Enum.FontSize.Size24 } )
+    end
+end)
+
+
+
 
 speaker = game:GetService("Players").LocalPlayer
 Mouse = speaker:GetMouse()
@@ -33,7 +246,7 @@ function getRoot(char)
 	return rootPart
 end
 
-local array = loadstring(game:HttpGet("https://raw.githubusercontent.com/Iratethisname10/Iy-plus/main/arraylist.lua"))()
+local array = loadstring(game:HttpGet("https://raw.githubusercontent.com/valkryant/vendettaOwnCheck/main/arraylist.lua"))()
 shared["CometConfigs"] = {
     Enabled = false
 }
@@ -43,7 +256,7 @@ local Window = Library:CreateWindow({
 		Info = '.gg/concat',
 		Credit = true,
 	},
-	DefaultTheme = shared.themename or '{"__Designer.Colors.main":"963fcc"}'
+	DefaultTheme = shared.themename or '{"__Designer.Colors.main":"f93f7c"}'
 })
 local RunLoops = {RenderStepTable = {}, StepTable = {}, HeartTable = {}}
 do
@@ -102,9 +315,158 @@ MiscTab = Window:CreateTab({
 CombatTab = Window:CreateTab({
 	Name = 'Combat'
 })
+EBGTab = Window:CreateTab({
+	Name = '[EBG]'
+})
 CreditsTab = Window:CreateTab({
 	Name = 'Others'
 })
+
+
+
+
+
+
+
+
+--[[ EBG TAB ]]
+local EBGSection = EBGTab:CreateSection({
+    Name = "[EBG]",
+    Side = "Bottom",
+})
+
+-- Bullets section
+local BulletsSection = EBGSection:CreateSection({
+    Name = "Bullets"
+})
+BulletsSection:AddToggle({
+    Name = "Toggle",
+    Flag = "BulletsToggle",
+    Keybind = 2,
+})
+BulletsSection:AddDropdown({
+    Name = "Dropdown",
+    Flag = "BulletsDropdown",
+    Options = {
+        "Option 1"
+    },
+})
+
+-- Blast section
+local BlastSection = EBGSection:CreateSection({
+    Name = "Blast"
+})
+BlastSection:AddToggle({
+    Name = "Toggle",
+    Flag = "BlastToggle",
+    Keybind = 3,
+})
+BlastSection:AddDropdown({
+    Name = "Dropdown",
+    Flag = "BlastDropdown",
+    Options = {
+        "Option 1"
+    },
+})
+
+-- AoE section
+local AoESection = EBGSection:CreateSection({
+    Name = "AoE"
+})
+AoESection:AddToggle({
+    Name = "Toggle",
+    Flag = "AoEToggle",
+    Keybind = 4,
+})
+AoESection:AddDropdown({
+    Name = "Dropdown",
+    Flag = "AoEDropdown",
+    Options = {
+        "Option 1"
+    },
+})
+
+-- Movement section
+local MovementSection = EBGSection:CreateSection({
+    Name = "Movement"
+})
+MovementSection:AddToggle({
+    Name = "Toggle",
+    Flag = "MovementToggle",
+    Keybind = 5,
+})
+MovementSection:AddDropdown({
+    Name = "Dropdown",
+    Flag = "MovementDropdown",
+    Options = {
+        "Option 1"
+    },
+})
+
+-- Armor section
+local ArmorSection = EBGSection:CreateSection({
+    Name = "Armor"
+})
+ArmorSection:AddToggle({
+    Name = "Toggle",
+    Flag = "ArmorToggle",
+    Keybind = 6,
+})
+ArmorSection:AddDropdown({
+    Name = "Dropdown",
+    Flag = "ArmorDropdown",
+    Options = {
+        "Option 1"
+    },
+})
+
+-- Healing section
+local HealingSection = EBGSection:CreateSection({
+    Name = "Healing"
+})
+HealingSection:AddToggle({
+    Name = "Toggle",
+    Flag = "HealingToggle",
+    Keybind = 7,
+})
+HealingSection:AddDropdown({
+    Name = "Dropdown",
+    Flag = "HealingDropdown",
+    Options = {
+        "Option 1"
+    },
+})
+
+-- Ultimate section
+local UltimateSection = EBGSection:CreateSection({
+    Name = "Ultimate"
+})
+UltimateSection:AddToggle({
+    Name = "Toggle",
+    Flag = "UltimateToggle",
+    Keybind = 8,
+})
+UltimateSection:AddDropdown({
+    Name = "Dropdown",
+    Flag = "UltimateDropdown",
+    Options = {
+        "Option 1"
+    },
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 Player0 = PlayerTab:CreateSection({
@@ -842,14 +1204,14 @@ local clicktp = Player1:AddToggle({
 				if input.UserInputType == Enum.UserInputType.MouseButton1 and UIS:IsKeyDown(Enum.KeyCode.LeftControl) and _G.clicktween == true then
 					wait()
 					for i,v in pairs(workspace:GetChildren()) do
-						if v.Name == "Tweenpaerr_NIGGASEXXXXXXXXXXXX_SIUt37rfjsd9fu4lKhdsrf8i3ksd" then 
+						if v.Name == "tween_vendetta" then 
 							v:Destroy()
 						end
 					end
 					wait()
 					local Target = Instance.new("Part")
 					Target.Parent = workspace
-					Target.Name = "Tweenpaerr_NIGGASEXXXXXXXXXXXX_SIUt37rfjsd9fu4lKhdsrf8i3ksd"
+					Target.Name = "tween_vendetta"
 					Target.CFrame = CFrame.new(Mouse.Hit.p.X, Mouse.Hit.p.Y + 1.5, Mouse.Hit.p.Z)
 					Target.Transparency = 1
 					Target.Anchored = true 
@@ -861,13 +1223,13 @@ local clicktp = Player1:AddToggle({
 						tweenService:Create(
 						game:GetService("Players")["LocalPlayer"].Character:WaitForChild("HumanoidRootPart"),
 						tweenInfo,
-						{CFrame = workspace:WaitForChild("Tweenpaerr_NIGGASEXXXXXXXXXXXX_SIUt37rfjsd9fu4lKhdsrf8i3ksd").CFrame}
+						{CFrame = workspace:WaitForChild("tween_vendetta").CFrame}
 					)
 					_tweenTpzz_:Play()
 					wait()
 					workspace.Gravity = oldgravy23
 					for i,v in pairs(workspace:GetChildren()) do
-						if v.Name == "Tweenpaerr_NIGGASEXXXXXXXXXXXX_SIUt37rfjsd9fu4lKhdsrf8i3ksd" then 
+						if v.Name == "tween_vendetta" then 
 							v:Destroy()
 						end
 					end
@@ -1616,18 +1978,18 @@ tphg9ghsu = Player1:AddToggle({
 })
 function CreateFloa2()
 	local floaty = Instance.new("Part")
-	floaty.Name = "FLOAT_BICH_NIGGPORN2"
+	floaty.Name = "FLOAT_BICH_pvenPORN2"
 	floaty.Anchored = true
 	floaty.Size = Vector3.new(1000, 0.1, 1000)
 	floaty.Parent = Workspace
-	fagotlmao =  speaker.Character.HumanoidRootPart
-	floaty.CFrame = CFrame.new(fagotlmao.Position.X, fagotlmao.Position.Y - 3.5, fagotlmao.Position.Z)
+	vendettalmao =  speaker.Character.HumanoidRootPart
+	floaty.CFrame = CFrame.new(vendettalmao.Position.X, vendettalmao.Position.Y - 3.5, vendettalmao.Position.Z)
 	floaty.Transparency = 1
 end
 
 function Nofloa2()
 	for i,v in pairs(workspace:GetChildren()) do
-		if v.Name == "FLOAT_BICH_NIGGPORN2" then
+		if v.Name == "FLOAT_BICH_pvenPORN2" then
 			v:Destroy()
 		end
 	end
@@ -1657,7 +2019,7 @@ local Float = Player1:AddToggle({
 		else
 			_G.PlatFormFloat = false
 			for i,v in pairs(workspace:GetChildren()) do
-				if v.Name == "FLOAT_BICH_NIGGPORN2" then
+				if v.Name == "FLOAT_BICH_pvenPORN2" then
 					v:Destroy()
 				end
 			end
@@ -3376,6 +3738,8 @@ antiafk = Player4:AddButton({
 	end
 })
 
+
+
 unlockcam = Visuals1:AddToggle({
 	Name = 'Unlock Camera',
 	Value = false,
@@ -3410,9 +3774,6 @@ nobuyshit = Visuals1:AddToggle({
 	end
 })
 
-local lightstuff = Visuals1:CreateLabel({
-	Text = 'Lighting'
-})
 
 
 local fb1 = Visuals1:AddButton({
@@ -3498,15 +3859,6 @@ local restorelighting = Visuals1:AddButton({
 		SavedLightingSettings.gs = Lighting.GlobalShadows
 	end
 })
-local lightstuff222 = Visuals1:CreateLabel({
-	Text = 'if you have not clicked '
-})
-local lightstuff222z = Visuals1:CreateLabel({
-	Text = 'Save Lighting, '
-})
-local lightstuff222z1 = Visuals1:CreateLabel({
-	Text = 'it will restore lighting '
-})
 local restorelighting = Visuals1:AddButton({
 	Name = "Load Lighting",
 	Callback = function()
@@ -3520,10 +3872,6 @@ local restorelighting = Visuals1:AddButton({
 	end
 })
 
-
-local lightstuff = Visuals1:CreateLabel({
-	Text = 'World'
-})
 local removeskybox = Visuals1:AddButton({
 	Name = "Remove Sky Box",
 	Callback = function()
@@ -3560,61 +3908,61 @@ CustomTime = Visuals1:AddSlider({
 	end
 })
 
-femboymodeuwu = Visuals1:AddToggle({
-	Name = 'Femboy Mode',
+vendettamode = Visuals1:AddToggle({
+	Name = 'vendetta Mode',
 	Value = false,
-	Flag = 'femodeuwu2',
+	Flag = 'vendettamode',
 	Locked = false,
 	Keybind = {
-		Flag = 'fembeuwu54',
+		Flag = 'vendettamode',
 		Mode = 'Toggle',
 	},
 
 	Callback = function( state )
 		if ( state ) then
-			local femsky = Instance.new("Sky")
-			local femblur = Instance.new("BlurEffect")
-			local femcc = Instance.new("ColorCorrectionEffect")
+			local vensky = Instance.new("Sky")
+			local venblur = Instance.new("BlurEffect")
+			local vencc = Instance.new("ColorCorrectionEffect")
 			
-			femsky.Parent = game.Lighting
-			femsky.Name = "femboymode_out"
-			femsky.CelestialBodiesShown = true
-			femsky.MoonAngularSize = 11
-			femsky.SkyboxBk = "rbxassetid://5084575798"
-			femsky.SkyboxDn = "rbxassetid://5084575916"
-			femsky.SkyboxFt = "rbxassetid://5103949679"
-			femsky.SkyboxLf = "rbxassetid://5103948542"
-			femsky.SkyboxRt = "rbxassetid://5103948784"
-			femsky.SkyboxUp = "rbxassetid://5084576400"
-			femsky.StarCount = 3000
-			femsky.SunAngularSize = 21
+			vensky.Parent = game.Lighting
+			vensky.Name = "vendettamode_out"
+			vensky.CelestialBodiesShown = true
+			vensky.MoonAngularSize = 11
+			vensky.SkyboxBk = "rbxassetid://5084575798"
+			vensky.SkyboxDn = "rbxassetid://5084575916"
+			vensky.SkyboxFt = "rbxassetid://5103949679"
+			vensky.SkyboxLf = "rbxassetid://5103948542"
+			vensky.SkyboxRt = "rbxassetid://5103948784"
+			vensky.SkyboxUp = "rbxassetid://5084576400"
+			vensky.StarCount = 3000
+			vensky.SunAngularSize = 21
 
-			femblur.Parent = game.Lighting
-			femblur.Name = "femblur_out"
-			femblur.Size = 4
-			femblur.Enabled = true
+			venblur.Parent = game.Lighting
+			venblur.Name = "venblur_out"
+			venblur.Size = 4
+			venblur.Enabled = true
 
-			femcc.Parent = game.Lighting
-			femcc.Brightness = 0
-			femcc.Contrast = 0
-			femcc.Name = "femccolor_out"
-			femcc.Enabled = true
-			femcc.Saturation = 0.1
-			femcc.TintColor = Color3.fromRGB(217, 79, 255)
+			vencc.Parent = game.Lighting
+			vencc.Brightness = 0
+			vencc.Contrast = 0
+			vencc.Name = "venccolor_out"
+			vencc.Enabled = true
+			vencc.Saturation = 0.1
+			vencc.TintColor = Color3.fromRGB(217, 79, 255)
 		else
 			wait()
 			for _,v in pairs(game.Lighting:GetChildren()) do
-				if v.Name == "femboymode_out" and v:IsA("Sky") then
+				if v.Name == "vendettamode_out" and v:IsA("Sky") then
 					v:Destroy()
 				end
 			end
 			for _,v in pairs(game.Lighting:GetChildren()) do
-				if v.Name == "femblur_out" and v:IsA("BlurEffect") then
+				if v.Name == "venblur_out" and v:IsA("BlurEffect") then
 					v:Destroy()
 				end
 			end
 			for _,v in pairs(game.Lighting:GetChildren()) do
-				if v.Name == "femccolor_out" and v:IsA("ColorCorrectionEffect") then
+				if v.Name == "venccolor_out" and v:IsA("ColorCorrectionEffect") then
 					v:Destroy()
 				end
 			end
@@ -3772,7 +4120,6 @@ local chamtransda1 = Visuals1:AddSlider({
 function clear_custom_skybox()
 	for i,v in pairs(Lighting:GetChildren()) do
 		if v.Name == "Night_Sky_OUT" or
-		v.Name == "BIG_BLACK_DUDE_OUT" or
 		v.Name == "ORANGE_SUNSET_OUT" or
 		v.Name == "SNOWY_SKY_OUT" or
 		v.Name == "VOIDAL_OUT" or
@@ -3780,9 +4127,7 @@ function clear_custom_skybox()
 		v.Name == "SPACE_SKYBOX_BACLK_OUT" or
 		v.Name == "NIGULA_OUT" or
 		v.Name == "NIGULA2_OUT" or
-		v.Name == "STORMMY_OUT" or
-		v.Name == "JEFF_THE_NIGGA_OUT" or
-		v.Name == "LONG_NOSE_NIGGA" then
+		v.Name == "STORMMY_OUT" then
 			v:Destroy()
 		end
 	end
@@ -3802,9 +4147,6 @@ local skybox = Visuals1:AddDropdown({
 		"Purple Nebula",
 		"Green Nebula",
 		"Stormy",
-		":)))))))))",
-		"QUANDALE DINGLE",
-		"Big Black ̶n̶i̶g̶g̶a̶  dude"
 	},
 	Callback = function( skybox )
 		if skybox == "Night Sky" then
@@ -3821,23 +4163,6 @@ local skybox = Visuals1:AddDropdown({
 			nightsky_skybox.SkyboxUp = "http://www.roblox.com/Asset/?ID=12064131"
 			nightsky_skybox.StarCount = 0
 			nightsky_skybox.SunAngularSize = 21
-
-		elseif skybox == "Big Black ̶n̶i̶g̶g̶a̶  dude" then
-			local blackdude_skybox = Instance.new("Sky")
-			blackdude_skybox.Parent = Lighting
-			blackdude_skybox.Name = "BIG_BLACK_DUDE_OUT"
-			blackdude_skybox.CelestialBodiesShown = true
-			blackdude_skybox.MoonAngularSize = 11
-			blackdude_skybox.MoonTextureId = "rbxassetid://10017359424"
-			blackdude_skybox.SunTextureId = "rbxassetid://10017359424"
-			blackdude_skybox.SkyboxBk = "rbxassetid://10017359424"
-			blackdude_skybox.SkyboxDn = "rbxassetid://10017359424"
-			blackdude_skybox.SkyboxFt = "rbxassetid://10017359424"
-			blackdude_skybox.SkyboxLf = "rbxassetid://10017359424"
-			blackdude_skybox.SkyboxRt = "rbxassetid://10017359424"
-			blackdude_skybox.SkyboxUp = "rbxassetid://10017359424"
-			blackdude_skybox.StarCount = 3000
-			blackdude_skybox.SunAngularSize = 21
 
 		elseif skybox == "Orange Sunset" then
 			local OrangeSunset_skybox = Instance.new("Sky")
@@ -3957,40 +4282,6 @@ local skybox = Visuals1:AddDropdown({
 			Stormy_skybox.SkyboxUp = "http://www.roblox.com/asset/?id=48015387"
 			Stormy_skybox.StarCount = 3000
 			Stormy_skybox.SunAngularSize = 21
-
-		elseif skybox == ":)))))))))" then
-			local scarry_skybox = Instance.new("Sky")
-			scarry_skybox.Parent = Lighting
-			scarry_skybox.Name = "JEFF_THE_NIGGA_OUT"
-			scarry_skybox.CelestialBodiesShown = false
-			scarry_skybox.MoonAngularSize = 11
-			scarry_skybox.MoonTextureId = "rbxasset://sky/moon.jpg"
-			scarry_skybox.SunTextureId = "rbxasset://sky/sun.jpg"
-			scarry_skybox.SkyboxBk = "http://www.roblox.com/asset/?id=103560945"
-			scarry_skybox.SkyboxDn = "http://www.roblox.com/asset/?id=103560945"
-			scarry_skybox.SkyboxFt = "http://www.roblox.com/asset/?id=103560945"
-			scarry_skybox.SkyboxLf = "http://www.roblox.com/asset/?id=103560945"
-			scarry_skybox.SkyboxRt = "http://www.roblox.com/asset/?id=103560945"
-			scarry_skybox.SkyboxUp = "http://www.roblox.com/asset/?id=103560945"
-			scarry_skybox.StarCount = 3000
-			scarry_skybox.SunAngularSize = 21
-
-		elseif skybox == "QUANDALE DINGLE" then
-			local QUANDALE_skybox = Instance.new("Sky")
-			QUANDALE_skybox.Parent = Lighting
-			QUANDALE_skybox.Name = "LONG_NOSE_NIGGA"
-			QUANDALE_skybox.CelestialBodiesShown = true
-			QUANDALE_skybox.MoonAngularSize = 11
-			QUANDALE_skybox.MoonTextureId = "rbxassetid://9065554720"
-			QUANDALE_skybox.SunTextureId = "rbxassetid://6196665106"
-			QUANDALE_skybox.SkyboxBk = "rbxassetid://9065554720"
-			QUANDALE_skybox.SkyboxDn = "rbxassetid://9065554720"
-			QUANDALE_skybox.SkyboxFt = "rbxassetid://9065554720"
-			QUANDALE_skybox.SkyboxLf = "rbxassetid://9065554720"
-			QUANDALE_skybox.SkyboxRt = "rbxassetid://9065554720"
-			QUANDALE_skybox.SkyboxUp = "rbxassetid://9065554720"
-			QUANDALE_skybox.StarCount = 3000
-			QUANDALE_skybox.SunAngularSize = 11
 			
 		elseif skybox == "No Skybox" then
 			clear_custom_skybox()
@@ -4182,7 +4473,7 @@ i4rdgdhgdfgh = Visuals3:CreateLabel({
 	Text = 'Esp'
 })
 
-local ESP = loadstring(game:HttpGet("https://raw.githubusercontent.com/Iratethisname10/Iy-plus/main/EspLibrary.lua"))()
+local ESP = loadstring(game:HttpGet("https://raw.githubusercontent.com/valkryant/vendettaOwnCheck/main/esplib.lua"))()
 ESPboxToggle4 = Visuals3:AddToggle({
 	Name = 'Boxes',
 	Value = false,
@@ -4297,10 +4588,6 @@ viewclip = Visuals4:AddToggle({
 			speaker.DevCameraOcclusionMode = "Zoom"
 		end
 	end
-})
-
-local proximitypromptslabel = Visuals4:CreateLabel({
-	Text = 'proximity prompts'
 })
 
 local PromptButtonHoldBegan = nil
@@ -4422,385 +4709,8 @@ noclickdetectorlimits = Visuals5:AddButton({
 	end
 })
 
---[[
-local Global = getgenv and getgenv() or _G
-local sex1 = Funny1:AddButton({
-	Name = "basic Bang",
-	Callback = function()
-		if r15(speaker) then
-			Notify({
-				Title = "Invalid Rig type",
-				Description = "You Need to be in R6",
-				Duration = 2
-			})
-		else
-			local number = "4966833843"
-
-			if Global.Dancing == true then
-				Global.Dancing = false
-			end
-		
-			local aaa = 'rbxassetid://' .. number
-		
-			if (not Global.CloneRig) or speaker.Character ~= Global.CloneRig then
-				loadstring(game:HttpGet('https://raw.githubusercontent.com/Iratethisname10/Iy-plus/main/animations/sag/ReanimMain.lua'))()
-			end
-		
-			local NeededAssets = game:GetObjects(aaa)[1]
-			local TweenService = game:GetService'TweenService'
-			if speaker.Character.Humanoid:FindFirstChild("Animator") then speaker.Character.Humanoid.Animator:Destroy() end
-			if speaker.Character:FindFirstChild("Animate") then speaker.Character:FindFirstChild("Animate"):Destroy() end
-			local Joints = {
-				["Torso"] = speaker.Character.HumanoidRootPart["RootJoint"],
-				["Right Arm"] =  speaker.Character.Torso["Right Shoulder"],
-				["Left Arm"] =  speaker.Character.Torso["Left Shoulder"],
-				["Head"] =  speaker.Character.Torso["Neck"],
-				["Left Leg"] =  speaker.Character.Torso["Left Hip"],
-				["Right Leg"] =  speaker.Character.Torso["Right Hip"]
-				}
-			Global.dancing = true
-			local speed = 1
-			local keyframes = NeededAssets:GetKeyframes()
-			repeat
-				for ii,frame in pairs(keyframes) do
-					local duration = keyframes[ii+1] and keyframes[ii+1].Time - frame.Time or task.wait(1/120)
-					if keyframes[ii-1] then
-						task.wait((frame.Time - keyframes[ii-1].Time)*speed)
-					end
-					for i,v in pairs(frame:GetDescendants()) do
-						if Joints[v.Name] then
-							TweenService:Create(Joints[v.Name],TweenInfo.new(duration*speed),{Transform = v.CFrame}):Play()
-						end
-					end
-				end
-				task.wait(1/120)
-			until Global.dancing == false
-		end
-	end
-})
-local sex1 = Funny1:AddButton({
-	Name = "Pushups",
-	Callback = function()
-		if r15(speaker) then
-			Notify({
-				Title = "Invalid Rig type",
-				Description = "You Need to be in R6",
-				Duration = 2
-			})
-		else
-			local number = "4966881089"
-
-			if Global.Dancing == true then
-				Global.Dancing = false
-			end
-		
-			local aaa = 'rbxassetid://' .. number
-		
-			if (not Global.CloneRig) or speaker.Character ~= Global.CloneRig then
-				loadstring(game:HttpGet('https://raw.githubusercontent.com/Iratethisname10/Iy-plus/main/animations/sag/ReanimMain.lua'))()
-			end
-		
-			local NeededAssets = game:GetObjects(aaa)[1]
-			local TweenService = game:GetService'TweenService'
-			if speaker.Character.Humanoid:FindFirstChild("Animator") then speaker.Character.Humanoid.Animator:Destroy() end
-			if speaker.Character:FindFirstChild("Animate") then speaker.Character:FindFirstChild("Animate"):Destroy() end
-			local Joints = {
-				["Torso"] = speaker.Character.HumanoidRootPart["RootJoint"],
-				["Right Arm"] =  speaker.Character.Torso["Right Shoulder"],
-				["Left Arm"] =  speaker.Character.Torso["Left Shoulder"],
-				["Head"] =  speaker.Character.Torso["Neck"],
-				["Left Leg"] =  speaker.Character.Torso["Left Hip"],
-				["Right Leg"] =  speaker.Character.Torso["Right Hip"]
-			}
-			Global.dancing = true
-			local speed = 1
-			local keyframes = NeededAssets:GetKeyframes()
-			repeat
-				for ii,frame in pairs(keyframes) do
-					local duration = keyframes[ii+1] and keyframes[ii+1].Time - frame.Time or task.wait(1/120)
-					if keyframes[ii-1] then
-						task.wait((frame.Time - keyframes[ii-1].Time)*speed)
-					end
-					for i,v in pairs(frame:GetDescendants()) do
-						if Joints[v.Name] then 
-							TweenService:Create(Joints[v.Name],TweenInfo.new(duration*speed),{Transform = v.CFrame}):Play()
-						end
-					end
-				end
-				task.wait(1/120)
-			until Global.dancing == false
-		end
-	end
-})
-local sex1 = Funny1:AddButton({
-	Name = "Bend Over",
-	Callback = function()
-		if r15(speaker) then
-			Notify({
-				Title = "Invalid Rig type",
-				Description = "You Need to be in R6",
-				Duration = 2
-			})
-		else
-			local number = "4966882047"
-
-			if Global.Dancing == true then
-				Global.Dancing = false
-			end
-		
-			local aaa = 'rbxassetid://' .. number
-		
-			if (not Global.CloneRig) or speaker.Character ~= Global.CloneRig then
-				loadstring(game:HttpGet('https://raw.githubusercontent.com/Iratethisname10/Iy-plus/main/animations/sag/ReanimMain.lua'))()
-			end
-		
-			local NeededAssets = game:GetObjects(aaa)[1]
-			local TweenService = game:GetService'TweenService'
-			if speaker.Character.Humanoid:FindFirstChild("Animator") then speaker.Character.Humanoid.Animator:Destroy() end
-			if speaker.Character:FindFirstChild("Animate") then speaker.Character:FindFirstChild("Animate"):Destroy() end
-			local Joints = {
-				["Torso"] = speaker.Character.HumanoidRootPart["RootJoint"],
-				["Right Arm"] =  speaker.Character.Torso["Right Shoulder"],
-				["Left Arm"] =  speaker.Character.Torso["Left Shoulder"],
-				["Head"] =  speaker.Character.Torso["Neck"],
-				["Left Leg"] =  speaker.Character.Torso["Left Hip"],
-				["Right Leg"] =  speaker.Character.Torso["Right Hip"]
-			}
-			Global.dancing = true
-			local speed = 1
-			local keyframes = NeededAssets:GetKeyframes() 
-			repeat
-				for ii,frame in pairs(keyframes) do 
-					local duration = keyframes[ii+1] and keyframes[ii+1].Time - frame.Time or task.wait(1/120)
-					if keyframes[ii-1] then
-						task.wait((frame.Time - keyframes[ii-1].Time)*speed)
-					end
-					for i,v in pairs(frame:GetDescendants()) do
-						if Joints[v.Name] then
-							TweenService:Create(Joints[v.Name],TweenInfo.new(duration*speed),{Transform = v.CFrame}):Play()
-						end
-					end
-				end
-				task.wait(1/120)
-			until Global.dancing == false
-		end
-	end
-})
-local sex1 = Funny1:AddButton({
-	Name = "lying Down",
-	Callback = function()
-		if r15(speaker) then
-			Notify({
-				Title = "Invalid Rig type",
-				Description = "You Need to be in R6",
-				Duration = 2
-			})
-		else
-			local number = "4966879039"
-
-			if Global.Dancing == true then
-				Global.Dancing = false
-			end
-		
-			local aaa = 'rbxassetid://' .. number
-		
-			if (not Global.CloneRig) or speaker.Character ~= Global.CloneRig then
-				loadstring(game:HttpGet('https://raw.githubusercontent.com/Iratethisname10/Iy-plus/main/animations/sag/ReanimMain.lua'))()
-			end
-		
-			local NeededAssets = game:GetObjects(aaa)[1]
-			local TweenService = game:GetService'TweenService'
-			if speaker.Character.Humanoid:FindFirstChild("Animator") then speaker.Character.Humanoid.Animator:Destroy() end
-			if speaker.Character:FindFirstChild("Animate") then speaker.Character:FindFirstChild("Animate"):Destroy() end
-			local Joints = {
-				["Torso"] = speaker.Character.HumanoidRootPart["RootJoint"],
-				["Right Arm"] =  speaker.Character.Torso["Right Shoulder"],
-				["Left Arm"] =  speaker.Character.Torso["Left Shoulder"],
-				["Head"] =  speaker.Character.Torso["Neck"],
-				["Left Leg"] =  speaker.Character.Torso["Left Hip"],
-				["Right Leg"] =  speaker.Character.Torso["Right Hip"]
-			}
-			Global.dancing = true
-			local speed = 1
-			local keyframes = NeededAssets:GetKeyframes() -- get keyframes, this is better then getchildren bc it gets the correct order 
-			repeat
-				for ii,frame in pairs(keyframes) do -- for i,v on each keyframe to get each individual frame
-					local duration = keyframes[ii+1] and keyframes[ii+1].Time - frame.Time or task.wait(1/120)
-					if keyframes[ii-1] then
-						task.wait((frame.Time - keyframes[ii-1].Time)*speed)
-					end
-					for i,v in pairs(frame:GetDescendants()) do -- get each part in the frame
-						if Joints[v.Name] then -- see if the part exists in the joint table
-							TweenService:Create(Joints[v.Name],TweenInfo.new(duration*speed),{Transform = v.CFrame}):Play()
-						end
-					end
-				end
-				task.wait(1/120)
-			until Global.dancing == false
-		end
-	end
-})
-local sex1 = Funny1:AddButton({
-	Name = "Blowjob",
-	Callback = function()
-		if r15(speaker) then
-			Notify({
-				Title = "Invalid Rig type",
-				Description = "You Need to be in R6",
-				Duration = 2
-			})
-		else
-		local number = "4963373273"
-
-		if Global.Dancing == true then
-			Global.Dancing = false
-		end
-	
-		local aaa = 'rbxassetid://' .. number
-	
-		if (not Global.CloneRig) or speaker.Character ~= Global.CloneRig then
-			loadstring(game:HttpGet('https://raw.githubusercontent.com/Iratethisname10/Iy-plus/main/animations/sag/ReanimMain.lua'))()
-		end
-	
-		local NeededAssets = game:GetObjects(aaa)[1]
-		local TweenService = game:GetService'TweenService'
-		if speaker.Character.Humanoid:FindFirstChild("Animator") then speaker.Character.Humanoid.Animator:Destroy() end
-		if speaker.Character:FindFirstChild("Animate") then speaker.Character:FindFirstChild("Animate"):Destroy() end
-		local Joints = {
-			["Torso"] = speaker.Character.HumanoidRootPart["RootJoint"],
-			["Right Arm"] =  speaker.Character.Torso["Right Shoulder"],
-			["Left Arm"] =  speaker.Character.Torso["Left Shoulder"],
-			["Head"] =  speaker.Character.Torso["Neck"],
-			["Left Leg"] =  speaker.Character.Torso["Left Hip"],
-			["Right Leg"] =  speaker.Character.Torso["Right Hip"]
-		}
-		Global.dancing = true
-		local speed = 1
-		local keyframes = NeededAssets:GetKeyframes()
-		repeat
-			for ii,frame in pairs(keyframes) do 
-				local duration = keyframes[ii+1] and keyframes[ii+1].Time - frame.Time or task.wait(1/120)
-				if keyframes[ii-1] then
-					task.wait((frame.Time - keyframes[ii-1].Time)*speed)
-				end
-				for i,v in pairs(frame:GetDescendants()) do 
-					if Joints[v.Name] then 
-						TweenService:Create(Joints[v.Name],TweenInfo.new(duration*speed),{Transform = v.CFrame}):Play()
-					end
-				end
-			end
-			task.wait(1/120)
-		until Global.dancing == false
-		end
-	end
-})
-
-local neko1lolololololl = Funny2:AddButton({
-	Name = "Neko V4",
-	Callback = function()
-		if r15(speaker) then
-			Notify({
-				Title = "Invalid Rig type",
-				Description = "You Need to be in R6",
-				Duration = 2
-			})
-		else
-			loadstring(game:HttpGet('https://raw.githubusercontent.com/shidemuri/coffeeware/main/nekov4.lua'))()
-		end
-	end
-})
-local nekov5loloolool = Funny2:AddButton({
-	Name = "Neko V5",
-	Callback = function()
-		if r15(speaker) then
-			Notify({
-				Title = "Invalid Rig type",
-				Description = "You Need to be in R6",
-				Duration = 2
-			})
-		else
-			loadstring(game:HttpGet('https://raw.githubusercontent.com/shidemuri/coffeeware/main/nekov5.lua'))()
-		end
-	end
-})
-local RoadRogulollololole = Funny2:AddButton({
-	Name = "Road Rogue",
-	Callback = function()
-		if r15(speaker) then
-			Notify({
-				Title = "Invalid Rig type",
-				Description = "You Need to be in R6",
-				Duration = 2
-			})
-		else
-			loadstring(game:HttpGet('https://raw.githubusercontent.com/shidemuri/coffeeware/main/Driveby_Simplifier.lua'))()
-		end
-	end
-})
-
-local Katanarist10fgdg = Funny2:AddButton({
-	Name = "Katanarist",
-	Callback = function()
-		if r15(speaker) then
-			Notify({
-				Title = "Invalid Rig type",
-				Description = "You Need to be in R6",
-				Duration = 2
-			})
-		else
-			loadstring(game:HttpGet('https://raw.githubusercontent.com/shidemuri/coffeeware/main/katanarist.lua'))()
-		end
-	end
-})
-
-local Ass3465assin = Funny2:AddButton({
-	Name = "Assassin",
-	Callback = function()
-		if r15(speaker) then
-			Notify({
-				Title = "Invalid Rig type",
-				Description = "You Need to be in R6",
-				Duration = 2
-			})
-		else
-			loadstring(game:HttpGet('https://raw.githubusercontent.com/shidemuri/coffeeware/main/assassin.lua'))()
-		end
-	end
-})
-
-local idkwhatthisisStratoGlitcher = Funny2:AddButton({
-	Name = "Strato Glitcher",
-	Callback = function()
-		if r15(speaker) then
-			Notify({
-				Title = "Invalid Rig type",
-				Description = "You Need to be in R6",
-				Duration = 2
-			})
-		else
-			loadstring(game:HttpGet('https://raw.githubusercontent.com/shidemuri/coffeeware/main/strato_glitcher.lua'))()
-		end
-	end
-})
-
-local Studio_Dummy_q34V3 = Funny2:AddButton({
-	Name = "Studio Dummy V3",
-	Callback = function()
-		if r15(speaker) then
-			Notify({
-				Title = "Invalid Rig type",
-				Description = "You Need to be in R6",
-				Duration = 2
-			})
-		else
-			loadstring(game:HttpGet('https://raw.githubusercontent.com/shidemuri/coffeeware/main/sdv3.lua'))()
-		end
-	end
-})
-]]
-
 local cumball = Funny3:AddButton({
-	Name = "Become Ball",	
+	Name = "Become a ball",	
 	Callback = function()
 
 	 	SPEED_MULTIPLIER = 30
@@ -4872,7 +4782,7 @@ hathub = Funny3:AddButton({
 				Duration = 2
 			})
 		else
-			loadstring(game:HttpGet('https://raw.githubusercontent.com/Iratethisname10/Iy-plus/main/fe%20extentions/hat%20hub%20v2.lua'))()
+			loadstring(game:HttpGet('https://raw.githubusercontent.com/valkryant/vendettaOwnCheck/main/vendettacmds.lua'))()
 		end
 	end
 })
@@ -4892,22 +4802,7 @@ hathub4 = Funny3:CreateLabel({
 hathub5 = Funny3:CreateLabel({
 	Text = '.angular (number)'
 })
---[[
-dafeet = Funny3:AddButton({
-	Name = "Da Feet",
-	Callback = function()
-		if r15(speaker) then
-			Notify({
-				Title = "Invalid Rig type",
-				Description = "You Need to be in R6",
-				Duration = 2
-			})
-		else
-			loadstring(game:HttpGet('https://gist.githubusercontent.com/1BlueCat/7291747e9f093555573e027621f08d6e/raw/23b48f2463942befe19d81aa8a06e3222996242c/FE%2520Da%2520Feets'))()
-		end
-	end
-})
-]]
+
 raybeamyesyeyse = Funny3:AddButton({
 	Name = "Ray Beam",
 	Callback = function()
@@ -5082,7 +4977,7 @@ raybeamyesyeyse = Funny3:AddButton({
 	end
 })
 raybeam1 = Funny3:CreateLabel({
-	Text = 'layer clothing recommended'
+	Text = 'Layered clothing recommended /!\\'
 })
 
 heartattack = Funny3:AddButton({
@@ -5092,7 +4987,7 @@ heartattack = Funny3:AddButton({
 	end
 })
 heartaytta1 = Funny3:CreateLabel({
-	Text = 'click Z to toggle'
+	Text = 'Press Z to toggle'
 })
 indfsdf = Funny4:AddToggle({
 	Name = 'Invis Fling',
@@ -5570,18 +5465,18 @@ local tweendelLMAO = Misc1:AddSlider({
 })
 function waypoint1()
 	local waypoint1 = Instance.new("Part")
-	waypoint1.Name = "wayPoint1_NIGGA_SEX_FUCKER"
+	waypoint1.Name = "wayPoint1_VENDETTA"
 	waypoint1.CFrame = speaker.Character.HumanoidRootPart.CFrame
 	waypoint1.Parent = workspace
 	waypoint1.Anchored = wayPointTables.WayPointAnchored
 	waypoint1.CanCollide = wayPointTables.WayPointCanCollide
 	waypoint1.Transparency = wayPointTables.WayPointTransparency
 	waypoint1.Size = Vector3.new(0.5, 0.5, 0.5)
-	niggawaypoint1 = workspace:WaitForChild("wayPoint1_NIGGA_SEX_FUCKER")
+	vendettawaypoint1 = workspace:WaitForChild("wayPoint1_VENDETTA")
 end
 function waypoint2()
 	local waypoint2 = Instance.new("Part")
-	waypoint2.Name = "wayPoint2_NIGGA_SEX_FUCKER"
+	waypoint2.Name = "wayPoint2_VENDETTA"
 	waypoint2.CFrame = speaker.Character.HumanoidRootPart.CFrame
 	waypoint2.Parent = workspace
 	waypoint2.Anchored = wayPointTables.WayPointAnchored
@@ -5591,7 +5486,7 @@ function waypoint2()
 end
 function waypoint3()
 	local waypoint3 = Instance.new("Part")
-	waypoint3.Name = "wayPoint3_NIGGA_SEX_FUCKER"
+	waypoint3.Name = "wayPoint3_VENDETTA"
 	waypoint3.CFrame = speaker.Character.HumanoidRootPart.CFrame
 	waypoint3.Parent = workspace
 	waypoint3.Anchored = wayPointTables.WayPointAnchored
@@ -5607,9 +5502,9 @@ local createlabelwaypoint = Misc1:CreateLabel({
 local createwayPoint1 = Misc1:AddButton({
 	Name = "Create Waypoint 1",
 	Callback = function()
-		for _,nigga in pairs(workspace:GetDescendants()) do
-			if nigga.Name == "wayPoint1_NIGGA_SEX_FUCKER" then
-				nigga:Destroy()
+		for _,vendetta in pairs(workspace:GetDescendants()) do
+			if vendetta.Name == "wayPoint1_VENDETTA" then
+				vendetta:Destroy()
 			end
 		end
 		wait()
@@ -5619,9 +5514,9 @@ local createwayPoint1 = Misc1:AddButton({
 local createwayPoint2 = Misc1:AddButton({
 	Name = "Create Waypoint 2",
 	Callback = function()
-		for _,nigga in pairs(workspace:GetDescendants()) do
-			if nigga.Name == "wayPoint2_NIGGA_SEX_FUCKER" then
-				nigga:Destroy()
+		for _,vendetta in pairs(workspace:GetDescendants()) do
+			if vendetta.Name == "wayPoint2_VENDETTA" then
+				vendetta:Destroy()
 			end
 		end
 		wait()
@@ -5631,9 +5526,9 @@ local createwayPoint2 = Misc1:AddButton({
 local createwayPoint3 = Misc1:AddButton({
 	Name = "Create Waypoint 3",
 	Callback = function()
-		for _,nigga in pairs(workspace:GetDescendants()) do
-			if nigga.Name == "wayPoint3_NIGGA_SEX_FUCKER" then
-				nigga:Destroy()
+		for _,vendetta in pairs(workspace:GetDescendants()) do
+			if vendetta.Name == "wayPoint3_VENDETTA" then
+				vendetta:Destroy()
 			end
 		end
 		wait()
@@ -5648,9 +5543,9 @@ local destroylabelwaypoint = Misc1:CreateLabel({
 local noPoint1 = Misc1:AddButton({
 	Name = "Destroy Waypoint 1",
 	Callback = function()
-		for _,nigga in pairs(workspace:GetDescendants()) do
-			if nigga.Name == "wayPoint1_NIGGA_SEX_FUCKER" then
-				nigga:Destroy()
+		for _,vendetta in pairs(workspace:GetDescendants()) do
+			if vendetta.Name == "wayPoint1_VENDETTA" then
+				vendetta:Destroy()
 			end
 		end
 	end
@@ -5658,9 +5553,9 @@ local noPoint1 = Misc1:AddButton({
 local noPoint2 = Misc1:AddButton({
 	Name = "Destroy Waypoint 2",
 	Callback = function()
-		for _,nigga in pairs(workspace:GetDescendants()) do
-			if nigga.Name == "wayPoint2_NIGGA_SEX_FUCKER" then
-				nigga:Destroy()
+		for _,vendetta in pairs(workspace:GetDescendants()) do
+			if vendetta.Name == "wayPoint2_VENDETTA" then
+				vendetta:Destroy()
 			end
 		end
 	end
@@ -5668,9 +5563,9 @@ local noPoint2 = Misc1:AddButton({
 local noPoint3 = Misc1:AddButton({
 	Name = "Destroy Waypoint 3",
 	Callback = function()
-		for _,nigga in pairs(workspace:GetDescendants()) do
-			if nigga.Name == "wayPoint3_NIGGA_SEX_FUCKER" then
-				nigga:Destroy()
+		for _,vendetta in pairs(workspace:GetDescendants()) do
+			if vendetta.Name == "wayPoint3_VENDETTA" then
+				vendetta:Destroy()
 			end
 		end
 	end
@@ -5678,11 +5573,11 @@ local noPoint3 = Misc1:AddButton({
 local noPoint = Misc1:AddButton({
 	Name = "Destroy All Waypoint",
 	Callback = function()
-		for _,nigga in pairs(workspace:GetDescendants()) do
-			if nigga.Name == "wayPoint3_NIGGA_SEX_FUCKER" or
-			nigga.Name == "wayPoint2_NIGGA_SEX_FUCKER" or
-			nigga.Name == "wayPoint1_NIGGA_SEX_FUCKER" then
-				nigga:Destroy()
+		for _,vendetta in pairs(workspace:GetDescendants()) do
+			if vendetta.Name == "wayPoint3_VENDETTA" or
+			vendetta.Name == "wayPoint2_VENDETTA" or
+			vendetta.Name == "wayPoint1_VENDETTA" then
+				vendetta:Destroy()
 			end
 		end
 	end
@@ -5699,7 +5594,7 @@ function tweenMode1()
         tweenService:Create(
         game:GetService("Players")["LocalPlayer"].Character:WaitForChild("HumanoidRootPart"),
         tweenInfo,
-        {CFrame = workspace:WaitForChild("wayPoint1_NIGGA_SEX_FUCKER").CFrame}
+        {CFrame = workspace:WaitForChild("wayPoint1_VENDETTA").CFrame}
     )
     tween:Play()
 	workspace.Gravity = 196.2
@@ -5711,11 +5606,12 @@ function tweenMode2()
         tweenService:Create(
         game:GetService("Players")["LocalPlayer"].Character:WaitForChild("HumanoidRootPart"),
         tweenInfo,
-        {CFrame = workspace:WaitForChild("wayPoint2_NIGGA_SEX_FUCKER").CFrame}
+        {CFrame = workspace:WaitForChild("wayPoint2_VENDETTA").CFrame}
     )
     tween:Play()
 	workspace.Gravity = 196.2
 end 
+
 function tweenMode3()
 	workspace.Gravity = 0
     tweenService, tweenInfo = game:GetService("TweenService"), TweenInfo.new(wayPointTables.TweenDelay, Enum.EasingStyle.Linear)
@@ -5723,7 +5619,7 @@ function tweenMode3()
         tweenService:Create(
         game:GetService("Players")["LocalPlayer"].Character:WaitForChild("HumanoidRootPart"),
         tweenInfo,
-        {CFrame = workspace:WaitForChild("wayPoint3_NIGGA_SEX_FUCKER").CFrame}
+        {CFrame = workspace:WaitForChild("wayPoint3_VENDETTA").CFrame}
     )
     tween:Play()
 	workspace.Gravity = 196.2
@@ -5734,7 +5630,7 @@ local goPoint1 = Misc1:AddButton({
 	Name = "To Waypoint 1",
 	Callback = function()
 		if wayPointTables.TweenModeIsActive == false then
-			speaker.Character.HumanoidRootPart.CFrame = workspace:WaitForChild("wayPoint1_NIGGA_SEX_FUCKER").CFrame
+			speaker.Character.HumanoidRootPart.CFrame = workspace:WaitForChild("wayPoint1_VENDETTA").CFrame
 		elseif wayPointTables.TweenModeIsActive == true then
 			workspace.Gravity = 0
 			tweenMode1()
@@ -5745,7 +5641,7 @@ local goPoint2 = Misc1:AddButton({
 	Name = "To Waypoint 2",
 	Callback = function()
 		if wayPointTables.TweenModeIsActive == false then
-			speaker.Character.HumanoidRootPart.CFrame = workspace:WaitForChild("wayPoint2_NIGGA_SEX_FUCKER").CFrame
+			speaker.Character.HumanoidRootPart.CFrame = workspace:WaitForChild("wayPoint2_VENDETTA").CFrame
 		elseif wayPointTables.TweenModeIsActive == true then
 			workspace.Gravity = 0
 			tweenMode2()
@@ -5756,7 +5652,7 @@ local goPoint3 = Misc1:AddButton({
 	Name = "To Waypoint 3",
 	Callback = function()
 		if wayPointTables.TweenModeIsActive == false then
-			speaker.Character.HumanoidRootPart.CFrame = workspace:WaitForChild("wayPoint3_NIGGA_SEX_FUCKER").CFrame
+			speaker.Character.HumanoidRootPart.CFrame = workspace:WaitForChild("wayPoint3_VENDETTA").CFrame
 		elseif wayPointTables.TweenModeIsActive == true then
 			workspace.Gravity = 0
 			tweenMode3()
@@ -5764,83 +5660,9 @@ local goPoint3 = Misc1:AddButton({
 	end
 })
 
-local waypotgnifds83 = Misc1:CreateLabel({
-	Text = 'Waypoints v2 | buggy'
-})
-waypointsv2active = Misc1:CreateLabel({
-	Text = 'waypoint v2 active: false'
-})
+
 local waypooints = {}
-local niggers = Instance.new("Folder", workspace)
-niggers.Name = "shuierfg"
-locked = true
-name___zzz = 1
 
-function make()
-	local waypoint = Instance.new("Part")
-	waypoint.Name = "WayPoint Number " .. name___zzz
-	waypoint.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
-	waypoint.Parent = workspace.shuierfg
-	waypoint.Anchored = true
-	waypoint.CanCollide = false
-	waypoint.Transparency = 0
-	waypoint.Size = Vector3.new(0.5, 0.5, 0.5)
-end
-
-i__8gdfgdfgdg = Misc1:AddDropdown({
-	Name = 'To Waypoint',
-	Flag = "asd43fsdf",
-	List = waypooints,
-	Callback = function( WAH )
-		if WAH then
-            if speaker.Character then
-                if locked == false then
-                    speaker.Character.HumanoidRootPart.CFrame = WAH.CFrame
-                end
-            end
-        end
-	end
-})
-
-Buttjidfgu9on = Misc1:AddButton({
-	Name = "Create waypoint",
-	Callback = function()
-		make()
-        name___zzz = name___zzz + 1
-	end
-})
-insetwajusdfs2 = Misc1:AddButton({
-	Name = "clear waypoints",
-	Callback = function()
-		for i, v in pairs(workspace.shuierfg:GetChildren()) do
-            if v:IsA("BasePart") then
-				v:Destroy()
-			end
-        end
-	end
-})
-insetwajusdfs = Misc1:AddButton({
-	Name = "insert waypoints",
-	Callback = function()
-		for i, v in pairs(workspace.shuierfg:GetChildren()) do
-            table.insert(waypooints, v)
-        end
-	end
-})
-acytibnsdfh7 = Misc1:AddButton({
-	Name = "Activate wapoints",
-	Callback = function()
-		locked = false
-		waypointsv2active:SetText('waypoint v2 active: true')
-	end
-})
-acytibnsdfh71 = Misc1:AddButton({
-	Name = "Deactivate wapoints",
-	Callback = function()
-		locked = true
-		waypointsv2active:SetText('waypoint v2 active: false')
-	end
-})
 _G.BreadCrumbs = false
 breadcrumbSettinds = {
 	BallDelay = 0.001;
@@ -5869,7 +5691,7 @@ local breadcrumsbs = Misc2:AddToggle({
 				breadball.Parent = workspace
 				yeyesy = speaker.Character.HumanoidRootPart.CFrame
 				breadball.CFrame = CFrame.new(yeyesy.Position.X, yeyesy.Position.Y - 1.7, yeyesy.Position.Z)
-				breadball.Name = "breadcrumbs_NIGGA"
+				breadball.Name = "breadcrumbs_VENDETTA"
 				breadball.CanCollide = false
 				breadball.Anchored = true
 				breadball.Size = Vector3.new(breadcrumbSettinds.BallSize ,breadcrumbSettinds.BallSize, breadcrumbSettinds.BallSize)
@@ -5881,7 +5703,7 @@ local breadcrumsbs = Misc2:AddToggle({
 			_G.BreadCrumbs = false
 			wait()
 			for i,v in pairs(workspace:GetChildren()) do
-				if v.Name == "breadcrumbs_NIGGA" then
+				if v.Name == "breadcrumbs_VENDETTA" then
 					v:Destroy()
 					if getgenv().SmoothDestroy == true then
 						wait()
@@ -5943,7 +5765,7 @@ local BallTransparency = Misc2:AddSlider({
 })
 local breamselecter = Misc2:AddDropdown({
 	Name = 'Type',
-	Flag = "balstyprniggaseex",
+	Flag = "balstyprvendetta",
 	Multi = false,
 	List = {
 		"Ball",
@@ -6094,15 +5916,15 @@ words = {
     ['download'] = 'Offsite Links',
     ['youtube'] = 'Offsite Links',
     ['dizzy'] = 'Offsite Links',
-	['nigger'] = 'Bullying',
-	['nigga'] = 'Bullying',
+	['vendetta'] = 'Bullying',
+	['vendetta'] = 'Bullying',
 	['sex'] = 'Bullying',
 	['fuck'] = 'Bullying',
 	['fucker'] = 'Bullying',
 	['porn'] = 'Bullying',
 	['dick'] = 'Bullying',
 	['pussy'] = 'Bullying',
-	['faggot'] = 'Bullying',
+	['vendetta'] = 'Bullying',
 	['shit'] = 'Bullying',
 	['roleplay'] = 'Bullying',
 	['kys'] = 'Bullying',
@@ -6305,71 +6127,19 @@ local disableshafechat = Misc4:AddButton({
 		})
 	end
 })
-local disableshafechat = Misc4:AddButton({
-	Name = "Disable FE          ",
-	Callback = function()
-		if is_synapse_function then
-			messagebox("Injection has started","FE Disabler",0)
-			messagebox("Roblox Process found","FE Disabler",0)
-			messagebox("\99\114\105\116\105\99\97\108\32\112\114\111\99\101\115\115\32\114\111\98\108\111\120\32\48\120\56\55\50\48\47\47\50\51\47\50\49\51\47\49\51\32\104\97\115\32\100\105\101\100\32\101\114\111\114\114\32\48\120\50\49\49\51\32\102\97\105\108\117\114\101\34","FE Disabler",0)
-			if rconsoleprint then
-				rconsolename("\48\120\51\50\50\54\53\51\50\51\50\56\51\50\54\51\50\54\55\51\50\56\55\53\56\55\54\53\51\54\52\55\51\50\56\54\55\52\54\55\52\51\50\56\54\55\52\51\50\54\52\54\55\50\51\57\10")
-				rconsoleprint("\112\114\111\99\101\115\115\32\100\105\101\100\58\32\114\101\116\114\121\105\110\103\32\49\n")
-				wait(3)
-				rconsoleprint("\112\114\111\99\101\115\115\32\100\105\101\100\58\32\114\101\116\114\121\105\110\103\32\50\n")
-				wait(4)
-				rconsoleprint("\112\114\111\99\101\115\115\32\100\105\101\100\58\32\114\101\116\114\121\105\110\103\32\51\n")
-				wait(3)
-				rconsoleprint("\112\114\111\99\101\115\115\32\100\105\101\100\58\32\114\101\116\114\121\105\110\103\32\52\n")
-				wait(3)
-				rconsoleprint("\112\114\111\99\101\115\115\32\100\105\101\100\58\32\114\101\116\114\121\105\110\103\32\53\n")
-				wait(3)
-				rconsoleprint("\112\114\111\99\101\115\115\32\100\105\101\100\58\32\114\101\116\114\121\105\110\103\32\54\n")
-				wait(1)
-				rconsoleerr("\112\114\111\99\101\115\115\32\114\101\99\111\118\101\114\121\32\110\111\116\32\114\101\115\112\111\110\100\105\110\103\n")
-				wait(3)
-				if setfpscap then
-					setfpscap(10)
-					wait(1)
-					speaker:Kick("\117\110\101\120\112\101\99\116\101\100\32\99\108\105\101\110\116\32\98\101\104\97\118\105\111\114\10")
-					wait(2)
-					while true do end
-					game:Shutdown()
-				else
-					speaker:Kick("\117\110\101\120\112\101\99\116\101\100\32\99\108\105\101\110\116\32\98\101\104\97\118\105\111\114\10")
-					wait(2)
-					while true do end
-					game:Shutdown()
-				end
-			else
-				if setfpscap then
-					setfpscap(10)
-					wait(1)
-					speaker:Kick("\117\110\101\120\112\101\99\116\101\100\32\99\108\105\101\110\116\32\98\101\104\97\118\105\111\114\10")
-					wait(2)
-					while true do end
-					game:Shutdown()
-				else
-					speaker:Kick("\117\110\101\120\112\101\99\116\101\100\32\99\108\105\101\110\116\32\98\101\104\97\118\105\111\114\10")
-					wait(2)
-					while true do end
-					game:Shutdown()
-				end
-			end
-		else
-			Notify({
-				Title = "Missing function",
-				Description = "Missing: is_synapse_function",
-				Duration = 4
-			})
-		end
-	end
+
+local safewarning = Visuals1:CreateLabel({
+	Text = 'If your account is 13+,'
 })
+local safewarning2 = Visuals1:CreateLabel({
+	Text = 'this might flag you!'
+})
+
 local antichatlogg = Misc4:AddButton({
-	Name = "Anti Chat logger    ",
+	Name = "Anti Chat logger",
 	Callback = function()
 		if not getgenv().Anti_Chat_Logger_Has_Ran then
-			loadstring(game:HttpGet("https://raw.githubusercontent.com/Iratethisname10/Iy-plus/main/Anti%20Chat%20logger.lua"))()
+			loadstring(game:HttpGet("https://raw.githubusercontent.com/valkryant/vendettaOwnCheck/main/ACL.lua"))()
 			Notify({
 				Title = "Anti Chat logger",
 				Description = "Anti Chat Logger is now active",
@@ -6380,7 +6150,7 @@ local antichatlogg = Misc4:AddButton({
 	end
 })
 local antikick = Misc4:AddButton({
-	Name = "Anti Client kick    ",
+	Name = "Disable Client-Kicks",
 	Callback = function()
 		local oldhmmi
 		local oldhmmnc
@@ -6399,7 +6169,7 @@ local antikick = Misc4:AddButton({
 		wait()
 		Notify({
 			Title = "Client Disabler",
-			Description = "Client Kicks now disabled",
+			Description = "Client kicks are now disabled.",
 			Duration = 2
 		})
 	end
@@ -6428,13 +6198,13 @@ local anticlirnttp = Misc4:AddButton({
 		end)
 		Notify({
 			Title = "Client Disabler",
-			Description = "Client Teleports now disabled",
+			Description = "Client teleports are now disabled.",
 			Duration = 2
 		})
 	end
 })
 local shiftlockyes = Misc4:AddButton({
-	Name = "Enable Shift Lock",
+	Name = "Force Shift Lock",
 	Callback = function()
 		speaker.DevEnableMouseLock = true
 		Notify({
@@ -6455,7 +6225,7 @@ local uscambleNaes = Misc4:AddButton({
 	end
 })
 local NoInviWalls = Misc4:AddButton({
-	Name = "Removed invisible walls",
+	Name = "Remove invisible parts",
 	Callback = function()
 		for i,v in pairs(workspace:GetDescendants()) do
 			if v:IsA("BasePart") and v.Name ~= "HumanoidRootPart" then
@@ -6467,7 +6237,7 @@ local NoInviWalls = Misc4:AddButton({
 	end
 })
 anticheatdisablerslabe = Misc4:CreateLabel({
-	Text = 'Anti Cheat Disablers'
+	Text = 'Anticheat Disablers'
 })
 ancdiabled = Misc4:AddButton({
 	Name = "Godmode Disabler",
@@ -6482,7 +6252,7 @@ local ancdiabled = Misc4:AddButton({
 	Callback = function()
 		Library.Prompt({
 			Name = "Get Reg Disabler",
-			Text = "this method could crash your client",
+			Text = "/!\\ This could potentially crash you! /!\\",
 			Buttons = {
 				Yes = function()
 					local reg = getreg()
@@ -6542,7 +6312,7 @@ local chatspamRwuygdf = Misc6:AddToggle({
 })
 local message = Misc6:AddTextbox({
 	Name = 'Message',
-	Flag = "pniggerdsg",
+	Flag = "pvendettadsg",
 	Value = "Vo is hot :3",
 	Callback = function( x )
 		SpammerTable.Message = x
@@ -6570,53 +6340,29 @@ local exitgames = Misc7:AddButton({
 local rejoinyesyes = Misc7:AddButton({
 	Name = "Rejoin Game",
 	Callback = function()
-		speaker:Kick("\nRejoining...")
-		game:GetService("TeleportService"):Teleport(game.PlaceId, speaker)
+		local plr = game.Players.LocalPlayer
+		game:GetService("TeleportService"):Teleport(game.PlaceId, plr)
 	end
 })
 
-_G.AutoRejoin = false
-local rejoinyesyes = Misc7:AddToggle({
-	Name = 'Auto Rejoin',
-	Value = false,
-	Flag = 'nchatgr1',
-	Locked = false,
-	Callback = function( state )
-		if ( state ) then
-			_G.AutoRejoin = true
-			repeat wait() until game.CoreGui:FindFirstChild('RobloxPromptGui')
-
-			game:GetService("CoreGui").RobloxPromptGui.promptOverlay.ChildAdded:connect(function(a)
-				if a.Name == 'ErrorPrompt' and _G.AutoRejoin == true then
-					repeat
-						game:GetService('TeleportService'):Teleport(game.PlaceId)
-						wait(2)
-					until false
-				end
-			end)
-		else
-			_G.AutoRejoin = false
-		end
-	end
-})
 jobid = Misc7:AddButton({
-	Name = "Copy Job Id",
+	Name = "Copy jobId",
 	Callback = function()
 		setclipboard('Roblox.GameLauncher.joinGameInstance('..game.PlaceId..', "'..game.JobId..'")')
 		Notify({
 			Title = "Job Id",
-			Description = "Job Id copied to clipboard",
+			Description = "Job Id copied to clipboard.",
 			Duration = 2
 		})
 	end
 })
 gameid = Misc7:AddButton({
-	Name = "Copy game Id",
+	Name = "Copy gameId",
 	Callback = function()
 		setclipboard(game.PlaceId)
 		Notify({
 			Title = "game Id",
-			Description = "game Id copied to clipboard",
+			Description = "game Id copied to clipboard.",
 			Duration = 2
 		})
 	end
@@ -6636,12 +6382,12 @@ heehehawhasd14 = Misc7:CreateLabel({
 })
 
 local HideCharTable = {
-	FaggotTransparency = 0.5;
-	FaggotSizeX = 3; 
-	FaggotSizeY = 5;
-	FaggotSizeZ = 3;
-	FaggotColor = Color3.new(115, 15, 180);
-	VeiwFaggot = true;
+	vendettaTransparency = 0.5;
+	vendettaSizeX = 3; 
+	vendettaSizeY = 5;
+	vendettaSizeZ = 3;
+	vendettaColor = Color3.new(115, 15, 180);
+	Veiwvendetta = true;
 }
 
 local hidechar = Misc8:AddToggle({
@@ -6657,29 +6403,29 @@ local hidechar = Misc8:AddToggle({
 	Callback = function( state )
 		if ( state ) then
 			oldcf = speaker.Character.HumanoidRootPart.CFrame
-			faggot = speaker.Character.HumanoidRootPart
-			faggot.CFrame = CFrame.new(0, -50, 0)
-			faggot.Anchored = true
-			faggotpart = Instance.new("Part")
-			faggotpart.Size = Vector3.new(HideCharTable.FaggotSizeX, HideCharTable.FaggotSizeY, HideCharTable.FaggotSizeZ)
-			faggotpart.Anchored = true
+			vendetta = speaker.Character.HumanoidRootPart
+			vendetta.CFrame = CFrame.new(0, -50, 0)
+			vendetta.Anchored = true
+			vendettapart = Instance.new("Part")
+			vendettapart.Size = Vector3.new(HideCharTable.vendettaSizeX, HideCharTable.vendettaSizeY, HideCharTable.vendettaSizeZ)
+			vendettapart.Anchored = true
 			
-			faggotpart.Material = Enum.Material.Neon
-			faggotpart.Transparency = HideCharTable.FaggotTransparency
-			faggotpart.CFrame = oldcf
-			faggotpart.CanCollide = false
-			faggotpart.Parent = game:GetService("Workspace")
-			if HideCharTable.VeiwFaggot == true then
-				game:GetService("Workspace").CurrentCamera.CameraSubject = faggotpart
+			vendettapart.Material = Enum.Material.Neon
+			vendettapart.Transparency = HideCharTable.vendettaTransparency
+			vendettapart.CFrame = oldcf
+			vendettapart.CanCollide = false
+			vendettapart.Parent = game:GetService("Workspace")
+			if HideCharTable.Veiwvendetta == true then
+				game:GetService("Workspace").CurrentCamera.CameraSubject = vendettapart
 			end
 			while state == true do
 				wait()
-				faggotpart.Color = HideCharTable.FaggotColor
+				vendettapart.Color = HideCharTable.vendettaColor
 			end
 		else
-			faggot.Anchored = false
-			faggot.CFrame = oldcf
-			faggotpart:Destroy()
+			vendetta.Anchored = false
+			vendetta.CFrame = oldcf
+			vendettapart:Destroy()
 			game:GetService("Workspace").CurrentCamera.CameraSubject = speaker.Character
 		end
 	end
@@ -6696,7 +6442,7 @@ hidechar2 = Misc8:AddToggle({
 	Locked = false,
 
 	Callback = function( state )
-		HideCharTable.VeiwFaggot = state
+		HideCharTable.Veiwvendetta = state
 	end
 })
 
@@ -6709,39 +6455,39 @@ hidechar3 = Misc8:AddSlider({
 	Decimals = 3,
 	llegalInput = false,
 	Callback = function( y )
-		HideCharTable.FaggotTransparency = y
+		HideCharTable.vendettaTransparency = y
 	end
 })
 
 hidechar22 = Misc8:AddTextbox({
 	Name = 'X Axis Value',
-	Flag = "pnigge",
+	Flag = "pven",
 	Value = 3,
 	Callback = function( x )
-		HideCharTable.FaggotSizeX = x
+		HideCharTable.vendettaSizeX = x
 	end
 })
 hidechar24 = Misc8:AddTextbox({
 	Name = 'Y Axis Value',
-	Flag = "pniggerdsgefs",
+	Flag = "pvendettadsgefs",
 	Value = 5,
 	Callback = function( x )
-		HideCharTable.FaggotSizeY = x
+		HideCharTable.vendettaSizeY = x
 	end
 })
 hidechar26 = Misc8:AddTextbox({
 	Name = 'Z Axis Value',
-	Flag = "pniggerdsg35eg",
+	Flag = "pvendettadsg35eg",
 	Value = 3,
 	Callback = function( x )
-		HideCharTable.FaggotSizeZ = x
+		HideCharTable.vendettaSizeZ = x
 	end
 })
 hidechar26E = Misc8:AddColorPicker({
 	Name = "part Color",
 	Value = Color3.new(115, 15, 180),
 	Callback = function( color )
-		HideCharTable.FaggotColor = color
+		HideCharTable.vendettaColor = color
 	end
 })
 
@@ -6789,7 +6535,7 @@ expandhitboxsizr = Misc9:AddTextbox({
 	end
 })
 
-loadstring(game:HttpGet("https://raw.githubusercontent.com/Iratethisname10/Iy-plus/main/aimbotLibrary.lua"))()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/valkryant/vendettaOwnCheck/main/aimlib.lua"))()
 local Aimbot = getgenv().Aimbot
 local Settings, FOVSettings, Functions = Aimbot.Settings, Aimbot.FOVSettings, Aimbot.Functions
 local Parts = {"Head", "HumanoidRootPart", "Torso", "Left Arm", "Right Arm", "Left Leg", "Right Leg", "LeftHand", "RightHand", "LeftLowerArm", "RightLowerArm", "LeftUpperArm", "RightUpperArm", "LeftFoot", "LeftLowerLeg", "UpperTorso", "LeftUpperLeg", "RightFoot", "RightLowerLeg", "LowerTorso", "RightUpperLeg"}
@@ -6990,10 +6736,10 @@ trigger = false
 triggerbotyes = Aim3:AddToggle({
 	Name = 'Enabled',
 	Value = false,
-	Flag = 'troiggernotnigga',
+	Flag = 'troiggernotvendetta',
 	Locked = false,
 	Keybind = {
-		Flag = 'troiggernotnigga2',
+		Flag = 'troiggernotvendetta2',
 		Mode = 'Toggle',
 	},
 
@@ -7017,7 +6763,7 @@ triggerbotyes = Aim3:AddToggle({
 		end
 	end
 })
-dniggeaevtr1 = Aim3:CreateLabel({
+dpveneaevtr1 = Aim3:CreateLabel({
 	Text = 'Settings'
 })
 triggerbiteamcheck = Aim3:AddToggle({
@@ -7118,42 +6864,33 @@ clickDelay22 = Aim4:AddSlider({
 
 
 dev1 = Credits1:CreateLabel({
-	Text = 'Vo | Main Dev'
+	Text = 'valk | Main Dev'
 })
 
 Scripter1 = Credits2:CreateLabel({
 	Text = 'Exunys	 | Aimbot'
 })
+Scripter3 = Credits2:CreateLabel({
+	Text = 'valk	 | Third Person Aimbot'
+})
 Scripter2 = Credits2:CreateLabel({
 	Text = 'zurewrath | Old CFrame Speed'
-})
-Scripte4 = Credits2:CreateLabel({
-	Text = 'JjsploitScripts | Chams'
 })
 
 Cool1 = Credits3:CreateLabel({
 	Text = 'E009'
 })
 Cool2 = Credits3:CreateLabel({
-	Text = 'cqc Demoted'
-})
-Cool3 = Credits3:CreateLabel({
 	Text = 'Noro'
 })
-Cool4 = Credits3:CreateLabel({
-	Text = 'joJo'
-})
 Cool5 = Credits3:CreateLabel({
-	Text = 'Someone is here'
-})
-Cool6 = Credits3:CreateLabel({
 	Text = 'Azura'
 })
 
 copydc = Credits4:AddButton({
 	Name = "Copy Discord Invite",
 	Callback = function()
-		setclipboard('https://discord.gg/NbUUucBXhq')
+		setclipboard('https://discord.gg/concat')
 		Notify({
 			Title = "Copy Discord Invite",
 			Description = "invite Copied to clipboard",
@@ -7187,18 +6924,13 @@ do
 	})
 end
 arrayexae = Credits5:CreateLabel({
-	Text = 'A Experimental feature '
-})
-arrayexae2 = Credits5:CreateLabel({
-	Text = 'not yet implemented'
+	Text = 'Experimental feature, not yet implemented. '
 })
 
 devoidersaslas = Credits5:CreateLabel({
 	Text = '⸻⸻⸻⸻⸻'
 })
 
-
--- // End stuff :)
 if syn then
 	syn.queue_on_teleport(
 		[[
