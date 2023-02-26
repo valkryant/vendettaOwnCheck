@@ -5383,7 +5383,7 @@ function tweenMode2()
     )
     tween:Play()
 	workspace.Gravity = 196.2
-end vencc
+end
 function tweenMode3()
 	workspace.Gravity = 0
     tweenService, tweenInfo = game:GetService("TweenService"), TweenInfo.new(wayPointTables.TweenDelay, Enum.EasingStyle.Linear)
