@@ -3900,7 +3900,7 @@ function clear_custom_skybox()
 		v.Name == "SPACE_SKYBOX_BACLK_OUT" or
 		v.Name == "NIGULA_OUT" or
 		v.Name == "NIGULA2_OUT" or
-		v.Name == "STORMMY_OUT" or
+		v.Name == "STORMMY_OUT" then
 			v:Destroy()
 		end
 	end
@@ -6641,8 +6641,12 @@ dev1 = Credits1:CreateLabel({
 
 Scripter1 = Credits2:CreateLabel({
 	Text = 'Exunys	 | Aimbot'
-    Text = 'valk	 | Third Person Aimbot'
 })
+
+Scripter3 = Credits2:CreateLabel({
+	Text = 'valk	 | Thirdperson Aimbot Fix'
+})
+
 Scripter2 = Credits2:CreateLabel({
 	Text = 'zurewrath | Old CFrame Speed'
 })
